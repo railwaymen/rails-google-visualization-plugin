@@ -121,6 +121,7 @@ module GoogleVisualization
     def initialize(view_instance, dates, options={}, *args)
       @helpers = view_instance
       @dates = dates
+      @draw_zeros = options.delete(:draw_zeros) || false
       @options = options.reverse_merge({:width => 600, :height => 300})
       @lines = []
       @name = "chart_#{self.object_id.to_s.gsub("-","")}"
@@ -129,7 +130,6 @@ module GoogleVisualization
       @data = ""
       @row_length = 0;
       @google_chart_name = 'LineChart' #default to linechart
-      @draw_zeros = options[:draw_zeros] || false
     end
 
     def render_head
