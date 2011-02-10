@@ -11,7 +11,7 @@ module GoogleVisualization
         helpers.send(method, *args, &block)
       end
     end
-    
+
     def initialize(view_instance, collection, options={}, *args)
       @helpers = view_instance
       @collection = collection
@@ -77,11 +77,11 @@ module GoogleVisualization
       procedure = title_proc_tuple[1]
       "data.addColumn('#{google_type(procedure)}','#{title}');\n"
     end
-  
+
     def motion_chart_set_value(row, column, value)
       "data.setValue(#{row}, #{column}, #{Mappings.ruby_to_javascript_object(value)});\n"
     end
-  
+
     def google_type(procedure)
       Mappings.ruby_to_google_type(procedure.call(collection[0]).class)
     end
@@ -89,7 +89,7 @@ module GoogleVisualization
     def google_formatted_value(value)
       Mappings.ruby_to_javascript_object(value)
     end
-  
+
     def label_to_color(label)
       hashed_label = label.downcase.gsub(" |-","_").to_sym
       if @labels.has_key? hashed_label
@@ -129,6 +129,7 @@ module GoogleVisualization
       @data = ""
       @row_length = 0;
       @google_chart_name = 'LineChart' #default to linechart
+      @draw_zeros = options[:draw_zeros] || false
     end
 
     def render_head
@@ -180,7 +181,7 @@ module GoogleVisualization
       else
         result =line_hash[:collection][index].send(line_hash[:method_hash][:value])
       end
-      if !@draw_zeroes && result.to_i == 0
+      if !@draw_zeros && result.to_i == 0
         nil
       else
         result
@@ -323,9 +324,9 @@ module GoogleVisualization
       chart = Chart.new(self,dates,options)
       chart.google_chart_name = google_chart_name
       yield chart
-      #chart.render
-      concat(chart.render)
+      chart.render.html_safe
     end
 
   end
 end
+
